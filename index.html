@@ -2,108 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f07a5a">
 <title>Alibaug Trip – Expense Split</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f6f4ef; --card:#fff; --ink:#1d2a2e; --muted:#6b7679; --line:#e6e2d9;
-    --sea:#0f6e74; --sea-soft:#e2f1f0; --pos:#1f7a3f; --neg:#b3412c; --sand:#f2e6cf;
+    --sand:#fbf6ee; --card:#ffffff; --ink:#16313a; --muted:#6c7f84; --line:#efe7da;
+    --sea:#0e6b73; --sea-2:#16909a; --coral:#f07a5a; --sun:#f6b24b;
+    --pos:#178a4e; --neg:#c94a35;
+    --arnab:#1592a0; --anushka:#ec6f5a; --dhruti:#e9a227;
+    --shadow:0 1px 2px rgba(22,49,58,.06), 0 8px 24px rgba(22,49,58,.07);
   }
   @media (prefers-color-scheme: dark){
-    :root{--bg:#141a1b; --card:#1d2526; --ink:#e9eeee; --muted:#9aa6a7; --line:#2c3638;
-      --sea:#5fc0c2; --sea-soft:#1f3436; --pos:#6fd08f; --neg:#f08a74; --sand:#2b2a24;}
+    :root{ --sand:#0f1b1f; --card:#17262b; --ink:#eef3f2; --muted:#93a6aa; --line:#24363c;
+      --pos:#5fd394; --neg:#ff8c75; --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);}
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-  .wrap{max-width:560px;margin:0 auto;padding:18px 14px 80px}
-  header h1{font-size:22px;margin:0 0 2px;letter-spacing:-.01em}
-  header p{margin:0;color:var(--muted);font-size:13px}
-  .total{margin:14px 0 6px;display:flex;gap:10px}
-  .total div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-  .total small{display:block;color:var(--muted);font-size:12px}
-  .total b{font-size:20px}
-  h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 8px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-top:1px solid var(--line);gap:10px}
-  .row:first-child{border-top:0}
-  .name{font-weight:600}
-  .sub{color:var(--muted);font-size:12.5px}
-  .pos{color:var(--pos);font-weight:600}
-  .neg{color:var(--neg);font-weight:600}
-  .settle .row{background:var(--sea-soft)}
-  .arrow{color:var(--sea);font-weight:700}
-  .exp{cursor:pointer}
-  .exp:active{background:var(--sand)}
-  .amt{font-weight:700;white-space:nowrap}
-  .empty{padding:18px 14px;color:var(--muted);text-align:center}
-  .fab{position:fixed;right:18px;bottom:18px;background:var(--sea);color:#fff;border:0;border-radius:999px;
-    padding:14px 20px;font-size:16px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-  @media (prefers-color-scheme: dark){.fab{color:#0d1617}}
-  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
-  .banner{background:var(--sand);border-radius:10px;padding:10px 12px;font-size:13px;margin-top:12px;display:none}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--sand);color:var(--ink)}
+  body{font:15px/1.45 "DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  .serif{font-family:"Fraunces",Georgia,serif}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;color:#fff;padding:calc(26px + env(safe-area-inset-top)) 20px 84px;
+    background:linear-gradient(170deg,#f6b24b 0%,#f07a5a 45%,#c9576b 78%,#7a4a7e 100%);overflow:hidden}
+  .sun{position:absolute;right:-30px;top:-30px;width:170px;height:170px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,240,200,.9) 0%,rgba(255,220,150,.35) 45%,transparent 70%)}
+  .hero-in{position:relative;max-width:560px;margin:0 auto}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
+  .hero h1{font-family:"Fraunces",Georgia,serif;font-size:38px;line-height:1.05;margin:6px 0 4px;letter-spacing:-.01em}
+  .crew{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px;opacity:.95}
+  .crew .avs{display:flex}
+  .crew .av{width:30px;height:30px;font-size:11px;border:2px solid rgba(255,255,255,.85);margin-left:-8px}
+  .crew .av:first-child{margin-left:0}
+  .waves{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:70px;display:block}
+
+  .wrap{max-width:560px;margin:-40px auto 0;padding:0 14px calc(110px + env(safe-area-inset-bottom));position:relative}
+
+  .card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;padding:16px 6px}
+  .stat{text-align:center;padding:0 6px;border-left:1px solid var(--line)}
+  .stat:first-child{border-left:0}
+  .stat small{display:block;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+  .stat b{display:block;font-family:"Fraunces",Georgia,serif;font-size:22px;margin-top:2px;letter-spacing:-.01em}
+
+  h2{display:flex;align-items:center;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted);margin:26px 4px 10px;font-weight:700}
+  h2 .line{flex:1;height:1px;background:var(--line)}
+
+  .av{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:15px;flex:none}
+  .av.Arnab{background:var(--arnab)} .av.Anushka{background:var(--anushka)} .av.Dhruti{background:var(--dhruti)}
+
+  /* settle */
+  .settle{display:grid;gap:10px}
+  .tx{display:flex;align-items:center;gap:10px;padding:14px 16px}
+  .tx .flow{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+  .tx .flow .nm{font-weight:600;white-space:nowrap}
+  .tx .arrow{flex:1;height:2px;min-width:18px;background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 8px);position:relative;opacity:.6}
+  .tx .arrow:after{content:"";position:absolute;right:-2px;top:-4px;border:5px solid transparent;border-left-color:var(--muted)}
+  .tx .amt{font-family:"Fraunces",Georgia,serif;font-size:20px;font-weight:700;color:var(--sea)}
+  @media (prefers-color-scheme: dark){ .tx .amt{color:#6fd3d6} }
+  .allgood{padding:22px 16px;text-align:center;color:var(--muted)}
+  .allgood .big{font-size:28px;display:block;margin-bottom:4px}
+
+  /* balances */
+  .bal{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--line)}
+  .bal:first-child{border-top:0}
+  .bal .mid{flex:1;min-width:0}
+  .bal .nm{font-weight:600}
+  .bal .sub{color:var(--muted);font-size:12.5px}
+  .bar{height:6px;border-radius:99px;background:var(--line);margin-top:6px;position:relative;overflow:hidden}
+  .bar i{position:absolute;top:0;bottom:0;border-radius:99px}
+  .bal .net{text-align:right;font-weight:700;font-size:14px;white-space:nowrap}
+  .bal .net small{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+
+  /* expenses */
+  .exp{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--line);cursor:pointer;transition:background .15s}
+  .exp:first-child{border-top:0}
+  .exp:active{background:rgba(240,122,90,.08)}
+  .ico{width:42px;height:42px;border-radius:13px;background:rgba(14,107,115,.09);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+  @media (prefers-color-scheme: dark){ .ico{background:rgba(111,211,214,.1)} }
+  .exp .mid{flex:1;min-width:0}
+  .exp .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .exp .sub{color:var(--muted);font-size:12.5px}
+  .exp .sub .dot{margin-right:5px;vertical-align:1px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dot.Arnab{background:var(--arnab)} .dot.Anushka{background:var(--anushka)} .dot.Dhruti{background:var(--dhruti)}
+  .exp .amt{font-weight:700;font-size:15.5px;white-space:nowrap}
+  .day{padding:9px 16px 6px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(246,178,75,.08);border-top:1px solid var(--line)}
+  .day:first-child{border-top:0}
+  .empty{padding:28px 16px;color:var(--muted);text-align:center}
+  .empty .big{font-size:34px;display:block;margin-bottom:6px}
+  .note{font-size:12.5px;color:var(--muted);margin:10px 4px 0;text-align:center}
+
+  .banner{background:#fff3df;color:#7a4b00;border-radius:12px;padding:10px 14px;font-size:13px;margin:12px 0 0;display:none}
+  @media (prefers-color-scheme: dark){ .banner{background:#3a2e15;color:#ffd38a} }
+
+  .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom));
+    background:linear-gradient(135deg,var(--coral),#d9566a);color:#fff;border:0;border-radius:999px;
+    padding:15px 26px;font:600 16px "DM Sans",sans-serif;box-shadow:0 10px 26px rgba(217,86,106,.38);display:flex;align-items:center;gap:8px;z-index:4}
+  .fab span{font-size:22px;line-height:0}
+  .fab:active{transform:translateX(-50%) scale(.97)}
+
   /* sheet */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:5}
+  .overlay{position:fixed;inset:0;background:rgba(10,24,28,.45);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center;z-index:10}
   .overlay.open{display:flex}
-  .sheet{background:var(--card);width:100%;max-width:560px;border-radius:16px 16px 0 0;padding:18px 16px 22px;max-height:92vh;overflow:auto}
-  .sheet h3{margin:0 0 12px;font-size:18px}
-  label{display:block;font-size:12.5px;color:var(--muted);margin:10px 0 4px}
-  input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit}
-  .chip.on{background:var(--sea);border-color:var(--sea);color:#fff}
-  @media (prefers-color-scheme: dark){.chip.on{color:#0d1617}}
-  .btns{display:flex;gap:10px;margin-top:18px}
-  .btn{flex:1;border:0;border-radius:10px;padding:13px;font:inherit;font-weight:600}
-  .primary{background:var(--sea);color:#fff}
-  @media (prefers-color-scheme: dark){.primary{color:#0d1617}}
-  .ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
-  .danger{background:transparent;color:var(--neg);border:1px solid var(--neg)}
-  .err{color:var(--neg);font-size:13px;margin-top:8px;min-height:1em}
+  .sheet{background:var(--card);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:up .22s ease-out}
+  @keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+  .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
+  .sheet h3{font-family:"Fraunces",Georgia,serif;margin:0 0 6px;font-size:22px}
+  label{display:block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--sand);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+  input:focus{border-color:var(--coral)}
+  .amtwrap{position:relative}
+  .amtwrap:before{content:"₹";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:"Fraunces",serif;font-size:22px;color:var(--muted)}
+  .amtwrap input{padding-left:34px;font-family:"Fraunces",serif;font-size:24px;font-weight:700}
+  .chips{display:flex;gap:8px}
+  .chip{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--sand);color:var(--ink);
+    border-radius:14px;padding:10px 4px;font:600 13px "DM Sans",sans-serif;transition:all .12s}
+  .chip .av{width:32px;height:32px;font-size:13px;opacity:.45;filter:grayscale(.6);transition:all .12s}
+  .chip.on{border-color:var(--coral);background:rgba(240,122,90,.09)}
+  .chip.on .av{opacity:1;filter:none}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btns{display:flex;gap:10px;margin-top:20px}
+  .btn{flex:1;border:0;border-radius:13px;padding:14px;font:600 15.5px "DM Sans",sans-serif}
+  .primary{background:linear-gradient(135deg,var(--coral),#d9566a);color:#fff}
+  .ghost{background:var(--sand);color:var(--ink);border:1.5px solid var(--line)}
+  .danger{background:transparent;color:var(--neg);border:1.5px solid currentColor}
+  .err{color:var(--neg);font-size:13px;margin-top:10px;min-height:1em}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>🌊 Alibaug Trip</h1>
-    <p>Arnab · Anushka · Dhruti — shared expense split</p>
-  </header>
 
+<section class="hero">
+  <div class="sun"></div>
+  <div class="hero-in">
+    <div class="kicker">Weekend by the sea</div>
+    <h1>Alibaug Trip</h1>
+    <div class="crew">
+      <div class="avs"><span class="av Arnab">Ar</span><span class="av Anushka">An</span><span class="av Dhruti">Dh</span></div>
+      Arnab · Anushka · Dhruti
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="rgba(255,255,255,.25)" d="M0,64 C240,110 480,10 720,50 C960,90 1200,20 1440,60 L1440,120 L0,120 Z"/>
+    <path fill="var(--sand)" d="M0,88 C260,50 520,120 760,86 C1000,52 1220,104 1440,80 L1440,120 L0,120 Z"/>
+  </svg>
+</section>
+
+<main class="wrap">
+  <div class="card stats">
+    <div class="stat"><small>Total</small><b id="tTotal">₹0</b></div>
+    <div class="stat"><small>Per head</small><b id="tHead">₹0</b></div>
+    <div class="stat"><small>Expenses</small><b id="tCount">0</b></div>
+  </div>
   <div class="banner" id="banner"></div>
 
-  <div class="total">
-    <div><small>Total spent</small><b id="tTotal">₹0</b></div>
-    <div><small>Per head (avg)</small><b id="tHead">₹0</b></div>
-  </div>
+  <h2>Settle up <span class="line"></span></h2>
+  <div class="settle" id="settle"><div class="card allgood">Loading…</div></div>
 
-  <h2>Settle up</h2>
-  <div class="card settle" id="settle"><div class="empty">Nothing to settle yet</div></div>
-
-  <h2>Balances</h2>
+  <h2>Balances <span class="line"></span></h2>
   <div class="card" id="balances"></div>
 
-  <h2>Expenses</h2>
+  <h2>Expenses <span class="line"></span></h2>
   <div class="card" id="list"><div class="empty">Loading…</div></div>
-  <p class="note">Tap an expense to edit or delete it. Updates show up live on everyone's phone.</p>
-</div>
+  <p class="note">Tap an expense to edit or delete · syncs live on everyone's phone</p>
+</main>
 
-<button class="fab" id="addBtn">+ Add expense</button>
+<button class="fab" id="addBtn"><span>+</span> Add expense</button>
 
 <div class="overlay" id="ov">
   <form class="sheet" id="form" autocomplete="off">
+    <div class="grab"></div>
     <h3 id="fTitle">Add expense</h3>
+    <label for="fAmt">Amount</label>
+    <div class="amtwrap"><input id="fAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0" required></div>
     <label for="fItem">What for</label>
-    <input id="fItem" placeholder="e.g. Ferry tickets, dinner, villa" required maxlength="80">
-    <label for="fAmt">Amount (₹)</label>
-    <input id="fAmt" type="number" inputmode="decimal" min="0" step="0.01" required>
+    <input id="fItem" placeholder="Ferry, villa, dinner, fuel…" required maxlength="80">
     <label>Paid by</label>
     <div class="chips" id="fPaid"></div>
     <label>Split between</label>
     <div class="chips" id="fSplit"></div>
-    <label for="fDate">Date</label>
-    <input id="fDate" type="date">
-    <label for="fNote">Note (optional)</label>
-    <input id="fNote" maxlength="120">
+    <div class="hint" id="fHint"></div>
+    <div class="two">
+      <div><label for="fDate">Date</label><input id="fDate" type="date"></div>
+      <div><label for="fNote">Note</label><input id="fNote" maxlength="120" placeholder="Optional"></div>
+    </div>
     <div class="err" id="fErr"></div>
     <div class="btns">
       <button type="button" class="btn ghost" id="cancel">Cancel</button>
@@ -124,6 +214,20 @@ const PEOPLE = ["Arnab","Anushka","Dhruti"];
 const $ = id => document.getElementById(id);
 const fmt = n => "₹" + Math.round(n).toLocaleString("en-IN");
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const INIT={Arnab:"Ar",Anushka:"An",Dhruti:"Dh"};
+const av = (p, cls="") => `<span class="av ${p} ${cls}">${INIT[p]||p[0]}</span>`;
+
+const ICONS = [
+  [/villa|stay|hotel|room|airbnb|resort|cottage|homestay/i,"🏡"],
+  [/ferry|m2m|boat|jetty|ro-?ro|catamaran|speed ?boat/i,"⛴️"],
+  [/fuel|petrol|diesel|toll|cab|uber|ola|auto|rickshaw|taxi|car|bus|train|parking/i,"🚗"],
+  [/drink|beer|bar|alcohol|wine|liquor|whisky|rum|vodka/i,"🍻"],
+  [/breakfast|lunch|dinner|food|meal|restaurant|cafe|snack|fish|thali|pizza|chai|tea|coffee/i,"🍽️"],
+  [/grocer|water|supplies|store|mart|shop/i,"🛒"],
+  [/beach|water ?sport|parasail|banana|jet ?ski|activity|ticket|fort|entry/i,"🏖️"],
+  [/ice ?cream|dessert|sweet/i,"🍦"],
+];
+const iconFor = t => (ICONS.find(([r])=>r.test(t||""))||[,"💸"])[1];
 
 let sb = null, expenses = [], editingId = null;
 let paid = PEOPLE[0], split = new Set(PEOPLE);
@@ -155,33 +259,58 @@ function settleUp(bal){
   }
   return out;
 }
+function dayLabel(d){
+  if (!d) return "No date";
+  return new Date(d+"T00:00").toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});
+}
 function render(){
   const {bal,total} = compute();
-  $("tTotal").textContent = fmt(total); $("tHead").textContent = fmt(total/PEOPLE.length);
+  $("tTotal").textContent = fmt(total);
+  $("tHead").textContent = fmt(total/PEOPLE.length);
+  $("tCount").textContent = expenses.length;
+
+  const s = settleUp(bal);
+  $("settle").innerHTML = s.length
+    ? s.map(t=>`<div class="card tx"><div class="flow">${av(t.from)}<span class="nm">${t.from}</span><span class="arrow"></span><span class="nm">${t.to}</span>${av(t.to)}</div><div class="amt">${fmt(t.amt)}</div></div>`).join("")
+    : `<div class="card allgood"><span class="big">${expenses.length?"🎉":"🏝️"}</span>${expenses.length?"Everyone's square!":"Nothing to settle yet"}</div>`;
+
+  const maxPaid = Math.max(1, ...PEOPLE.map(p=>bal[p].paid));
   $("balances").innerHTML = PEOPLE.map(p=>{
     const n = bal[p].paid - bal[p].share;
     const cls = n>0.5?"pos":n<-0.5?"neg":"";
-    const txt = n>0.5?"gets back "+fmt(n):n<-0.5?"owes "+fmt(-n):"all square";
-    return `<div class="row"><div><div class="name">${p}</div><div class="sub">Paid ${fmt(bal[p].paid)} · Share ${fmt(bal[p].share)}</div></div><div class="${cls}">${txt}</div></div>`;
+    const top = n>0.5?"+"+fmt(n):n<-0.5?"−"+fmt(-n):"₹0";
+    const lbl = n>0.5?"gets back":n<-0.5?"owes":"all square";
+    const w = (bal[p].paid/maxPaid*100).toFixed(1);
+    return `<div class="bal">${av(p)}<div class="mid"><div class="nm">${p}</div><div class="sub">Paid ${fmt(bal[p].paid)} · Share ${fmt(bal[p].share)}</div><div class="bar"><i style="width:${w}%;background:var(--${p.toLowerCase()})"></i></div></div><div class="net ${cls}">${top}<small>${lbl}</small></div></div>`;
   }).join("");
-  const s = settleUp(bal);
-  $("settle").innerHTML = s.length
-    ? s.map(t=>`<div class="row"><div><span class="name">${t.from}</span> <span class="arrow">→</span> <span class="name">${t.to}</span></div><div class="amt">${fmt(t.amt)}</div></div>`).join("")
-    : `<div class="empty">${expenses.length ? "Everyone's settled 🎉" : "Nothing to settle yet"}</div>`;
-  $("list").innerHTML = expenses.length ? expenses.map(e=>{
-    const who = e.split||[];
-    const splitTxt = who.length===PEOPLE.length ? "split 3 ways" : "split: "+who.join(", ");
-    const d = e.spent_on ? new Date(e.spent_on+"T00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short"}) : "";
-    return `<div class="row exp" data-id="${esc(e.id)}"><div><div class="name">${esc(e.item)}</div><div class="sub">${esc(e.paid_by)} paid · ${esc(splitTxt)}${d?" · "+d:""}${e.note?" · "+esc(e.note):""}</div></div><div class="amt">${fmt(Number(e.amount)||0)}</div></div>`;
-  }).join("") : `<div class="empty">No expenses yet. Tap “+ Add expense”.</div>`;
+
+  if (!expenses.length){
+    $("list").innerHTML = `<div class="empty"><span class="big">🧾</span>No expenses yet. Tap “Add expense” to start.</div>`;
+  } else {
+    let html="", last=null;
+    for (const e of expenses){
+      const key = e.spent_on || "";
+      if (key!==last){ html += `<div class="day">${dayLabel(key)}</div>`; last=key; }
+      const who = e.split||[];
+      const splitTxt = who.length===PEOPLE.length ? "split 3 ways" : "for "+who.join(" & ");
+      html += `<div class="exp" data-id="${esc(e.id)}"><div class="ico">${iconFor(e.item)}</div><div class="mid"><div class="nm">${esc(e.item)}</div><div class="sub"><span class="dot ${esc(e.paid_by)}"></span>${esc(e.paid_by)} paid · ${esc(splitTxt)}${e.note?" · "+esc(e.note):""}</div></div><div class="amt">${fmt(Number(e.amount)||0)}</div></div>`;
+    }
+    $("list").innerHTML = html;
+  }
   document.querySelectorAll(".exp").forEach(el=>el.onclick=()=>openForm(el.dataset.id));
 }
 function drawChips(){
-  $("fPaid").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${p===paid?"on":""}" data-p="${p}">${p}</button>`).join("");
-  $("fSplit").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${split.has(p)?"on":""}" data-s="${p}">${p}</button>`).join("");
+  $("fPaid").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${p===paid?"on":""}" data-p="${p}">${av(p)}${p}</button>`).join("");
+  $("fSplit").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${split.has(p)?"on":""}" data-s="${p}">${av(p)}${p}</button>`).join("");
   $("fPaid").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{paid=b.dataset.p;drawChips();});
   $("fSplit").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const p=b.dataset.s; split.has(p)?split.delete(p):split.add(p); drawChips();});
+  updateHint();
 }
+function updateHint(){
+  const a = parseFloat($("fAmt").value);
+  $("fHint").textContent = split.size && a>0 ? `${fmt(a/split.size)} each` : (split.size ? "" : "Pick at least one person");
+}
+$("fAmt").addEventListener("input", updateHint);
 function today(){ return new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10); }
 function openForm(id){
   editingId = id || null;
@@ -195,7 +324,7 @@ function openForm(id){
   $("delRow").style.display = e ? "flex" : "none";
   $("del").textContent = "Delete this expense"; $("del").dataset.confirm = "";
   drawChips(); $("ov").classList.add("open");
-  if (!e) setTimeout(()=>$("fItem").focus(),50);
+  if (!e) setTimeout(()=>$("fAmt").focus(),60);
 }
 function closeForm(){ $("ov").classList.remove("open"); editingId=null; }
 $("addBtn").onclick = ()=>openForm();
@@ -215,7 +344,7 @@ $("form").addEventListener("submit", async ev=>{
   if (!sb){ $("fErr").textContent="Not connected. Check your internet and reload."; return; }
   const amount = Math.round(parseFloat($("fAmt").value)*100)/100;
   const item = $("fItem").value.trim();
-  if (!item || !(amount>0)) { $("fErr").textContent="Add what it was for and an amount."; return; }
+  if (!item || !(amount>0)) { $("fErr").textContent="Add an amount and what it was for."; return; }
   if (!split.size) { $("fErr").textContent="Pick at least one person to split with."; return; }
   const body = { item, amount, paid_by: paid, split: PEOPLE.filter(p=>split.has(p)),
                  spent_on: $("fDate").value || null, note: $("fNote").value.trim() || null };
