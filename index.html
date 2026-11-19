@@ -136,6 +136,28 @@
   .ghost{background:var(--sand);color:var(--ink);border:1.5px solid var(--line)}
   .danger{background:transparent;color:var(--neg);border:1.5px solid currentColor}
   .err{color:var(--neg);font-size:13px;margin-top:10px;min-height:1em}
+  .delbox{display:none;margin-top:16px;padding:14px;border-radius:14px;background:rgba(201,74,53,.07);border:1.5px solid rgba(201,74,53,.25)}
+  .delbox.open{display:block}
+  .delbox p{margin:0 0 10px;font-weight:600;font-size:14px}
+  .delbox .chip.on{border-color:var(--neg);background:rgba(201,74,53,.1)}
+  .solid-danger{background:var(--neg);color:#fff}
+  .logtoggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--card);border:0;border-radius:18px;box-shadow:var(--shadow);
+    padding:14px 16px;font:600 14px "DM Sans",sans-serif;color:var(--ink)}
+  .logtoggle .cnt{background:var(--line);color:var(--muted);border-radius:99px;padding:2px 9px;font-size:12px;margin-left:6px}
+  .logtoggle .chev{transition:transform .15s;color:var(--muted)}
+  .logtoggle.open .chev{transform:rotate(180deg)}
+  #log{margin-top:10px;display:none}
+  #log.open{display:block}
+  .lg{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
+  .lg:first-child{border-top:0}
+  .lg .ico{opacity:.5;filter:grayscale(1)}
+  .lg .mid{flex:1;min-width:0}
+  .lg .nm{font-weight:600;text-decoration:line-through;text-decoration-color:var(--neg);color:var(--muted)}
+  .lg .sub{color:var(--muted);font-size:12px}
+  .lg .right{text-align:right}
+  .lg .amt{font-weight:700;color:var(--muted);text-decoration:line-through;font-size:14px}
+  .restore{margin-top:4px;border:1.5px solid var(--line);background:var(--sand);color:var(--sea);border-radius:99px;padding:4px 11px;font:600 12px "DM Sans",sans-serif}
+  @media (prefers-color-scheme: dark){ .restore{color:#6fd3d6} }
 </style>
 </head>
 <body>
@@ -172,7 +194,11 @@
 
   <h2>Expenses <span class="line"></span></h2>
   <div class="card" id="list"><div class="empty">Loading…</div></div>
-  <p class="note">Tap an expense to edit or delete · syncs live on everyone's phone</p>
+  <p class="note">Tap an expense to edit or delete · deleted ones stay in the log · syncs live on everyone's phone</p>
+
+  <h2>Log <span class="line"></span></h2>
+  <button class="logtoggle" id="logBtn" type="button"><span>🗂️ Deleted expenses<span class="cnt" id="logCnt">0</span></span><span class="chev">▾</span></button>
+  <div class="card" id="log"></div>
 </main>
 
 <button class="fab" id="addBtn"><span>+</span> Add expense</button>
@@ -202,6 +228,15 @@
     <div class="btns" id="delRow" style="display:none">
       <button type="button" class="btn danger" id="del">Delete this expense</button>
     </div>
+    <div class="delbox" id="delBox">
+      <p>Who's deleting this?</p>
+      <div class="chips" id="fDelBy"></div>
+      <div class="hint">It moves to the Deleted log, where it can be restored.</div>
+      <div class="btns">
+        <button type="button" class="btn ghost" id="delCancel">Keep it</button>
+        <button type="button" class="btn solid-danger" id="delGo">Delete</button>
+      </div>
+    </div>
   </form>
 </div>
 
@@ -229,7 +264,7 @@ const ICONS = [
 ];
 const iconFor = t => (ICONS.find(([r])=>r.test(t||""))||[,"💸"])[1];
 
-let sb = null, expenses = [], editingId = null;
+let sb = null, all = [], expenses = [], deleted = [], editingId = null, delBy = null;
 let paid = PEOPLE[0], split = new Set(PEOPLE);
 try { const last = localStorage.getItem("alibaug_me"); if (PEOPLE.includes(last)) paid = last; } catch(_){}
 
@@ -298,6 +333,24 @@ function render(){
     $("list").innerHTML = html;
   }
   document.querySelectorAll(".exp").forEach(el=>el.onclick=()=>openForm(el.dataset.id));
+
+  $("logCnt").textContent = deleted.length;
+  $("log").innerHTML = deleted.length ? deleted.map(e=>{
+    const when = new Date(e.deleted_at).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+    return `<div class="lg"><div class="ico">${iconFor(e.item)}</div><div class="mid"><div class="nm">${esc(e.item)}</div><div class="sub">${esc(e.paid_by)} paid · deleted by ${esc(e.deleted_by||"someone")} · ${when}</div></div><div class="right"><div class="amt">${fmt(Number(e.amount)||0)}</div><button type="button" class="restore" data-id="${esc(e.id)}">Restore</button></div></div>`;
+  }).join("") : `<div class="empty">Nothing deleted yet.</div>`;
+  document.querySelectorAll(".restore").forEach(b=>b.onclick=()=>restore(b.dataset.id, b));
+}
+$("logBtn").onclick = ()=>{ $("logBtn").classList.toggle("open"); $("log").classList.toggle("open"); };
+async function restore(id, btn){
+  btn.disabled = true; btn.textContent = "Restoring…";
+  const { error } = await sb.from(TABLE).update({deleted_at:null, deleted_by:null}).eq("id", id);
+  if (error){ btn.disabled=false; btn.textContent="Restore"; banner("Couldn't restore: "+error.message); return; }
+  load();
+}
+function drawDelChips(){
+  $("fDelBy").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${p===delBy?"on":""}" data-d="${p}">${av(p)}${p}</button>`).join("");
+  $("fDelBy").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{delBy=b.dataset.d;drawDelChips();});
 }
 function drawChips(){
   $("fPaid").innerHTML = PEOPLE.map(p=>`<button type="button" class="chip ${p===paid?"on":""}" data-p="${p}">${av(p)}${p}</button>`).join("");
@@ -322,7 +375,8 @@ function openForm(id){
   split = new Set(e ? e.split : PEOPLE);
   $("fErr").textContent = "";
   $("delRow").style.display = e ? "flex" : "none";
-  $("del").textContent = "Delete this expense"; $("del").dataset.confirm = "";
+  $("delBox").classList.remove("open");
+  try { const me = localStorage.getItem("alibaug_me"); delBy = PEOPLE.includes(me) ? me : null; } catch(_){ delBy = null; }
   drawChips(); $("ov").classList.add("open");
   if (!e) setTimeout(()=>$("fAmt").focus(),60);
 }
@@ -336,7 +390,10 @@ async function load(){
   const { data, error } = await sb.from(TABLE).select("*")
     .order("spent_on",{ascending:false,nullsFirst:false}).order("created_at",{ascending:false});
   if (error){ banner("Couldn't load expenses — check your connection."); return; }
-  banner(""); expenses = data; render();
+  banner(""); all = data;
+  expenses = all.filter(e=>!e.deleted_at);
+  deleted = all.filter(e=>e.deleted_at).sort((a,b)=>b.deleted_at.localeCompare(a.deleted_at));
+  render();
 }
 
 $("form").addEventListener("submit", async ev=>{
@@ -357,10 +414,13 @@ $("form").addEventListener("submit", async ev=>{
   if (error){ $("fErr").textContent = "Couldn't save: " + error.message; return; }
   closeForm(); load();
 });
-$("del").onclick = async ()=>{
-  const b=$("del");
-  if (!b.dataset.confirm){ b.dataset.confirm="1"; b.textContent="Tap again to delete"; return; }
-  const { error } = await sb.from(TABLE).delete().eq("id", editingId);
+$("del").onclick = ()=>{ drawDelChips(); $("delBox").classList.add("open"); $("delBox").scrollIntoView({behavior:"smooth",block:"nearest"}); };
+$("delCancel").onclick = ()=> $("delBox").classList.remove("open");
+$("delGo").onclick = async ()=>{
+  if (!delBy){ $("fErr").textContent="Pick who's deleting it."; return; }
+  $("delGo").disabled = true;
+  const { error } = await sb.from(TABLE).update({deleted_at:new Date().toISOString(), deleted_by:delBy}).eq("id", editingId);
+  $("delGo").disabled = false;
   if (error){ $("fErr").textContent="Couldn't delete: "+error.message; return; }
   closeForm(); load();
 };
